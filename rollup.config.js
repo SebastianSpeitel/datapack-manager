@@ -14,11 +14,12 @@ function makeConfig() {
     plugins: [
       ts({ tsconfigOverride: { compilerOptions: { rootDir: "src" } } })
     ],
-    external: ["fs"]
+    external: ["fs", "yargs", "path", "@throw-out-error/minecraft-datapack"]
   };
 }
 
 const cjsConfig = makeConfig();
+cjsConfig.input = [cjsConfig.input, "src/cli.ts"].flat();
 const esmConfig = makeConfig();
 esmConfig.output.format = "esm";
 esmConfig.output.dir = "dist";
