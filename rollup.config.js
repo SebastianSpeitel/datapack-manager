@@ -7,7 +7,8 @@ function makeConfig() {
       format: "cjs",
       dir: "legacy",
       exports: "named",
-      hoistTransitiveImports: false
+      hoistTransitiveImports: false,
+      banner: "#!/usr/bin/env node"
     },
     preserveModules: true,
     context: "this",
