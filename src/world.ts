@@ -5,11 +5,31 @@ import pth from "path";
 
 export type InstallMode = "symlink" | "copy" | "compile" | "move";
 
+const worldCache = new Map<string, World>();
+
 export default class World {
+  static fromPath(path: string) {
+    const world = worldCache.get(path);
+    return world || new World(path);
+  }
+
   declare path: string;
 
   constructor(path: string) {
     this.path = path;
+    worldCache.set(path, this);
+  }
+
+  async getDatapacks() {
+    const packs: Datapack[] = [];
+    const packsPath = pth.join(this.path, "datapacks");
+    try {
+      const packsDir = await fs.opendir(packsPath);
+      for await (let { name } of packsDir) {
+        packs.push(new Datapack(name, packsPath, {}));
+      }
+    } catch (e) {}
+    return packs;
   }
 
   async install(

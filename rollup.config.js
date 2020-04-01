@@ -15,7 +15,13 @@ function makeConfig() {
     plugins: [
       ts({ tsconfigOverride: { compilerOptions: { rootDir: "src" } } })
     ],
-    external: ["fs", "yargs", "path", "@throw-out-error/minecraft-datapack"]
+    external: [
+      "fs",
+      "yargs",
+      "path",
+      "@throw-out-error/minecraft-datapack",
+      "os"
+    ]
   };
 }
 

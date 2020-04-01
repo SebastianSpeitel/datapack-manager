@@ -31,7 +31,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@throw-out-error/minecraft-datapack": "^1.6.7",
+    "@throw-out-error/minecraft-datapack": "^1.6.8",
     "yargs": "^15.3.1"
   }
 }
