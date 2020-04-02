@@ -65,7 +65,7 @@ yargs
       console.error(e?.message ?? e);
     });
   })
-  .command(["search"], "Search for local datapacks", async yargs => {
+  .command(["list"], "List local datapacks", async yargs => {
     const argv = yargs.options({
       root: {
         desc: "Path of the minecraft folder",
@@ -77,7 +77,7 @@ yargs
     const { root } = argv;
 
     manager.root = root;
-    const packs = await manager.search();
+    const packs = await manager.list();
     console.log(packs);
   })
   .help()

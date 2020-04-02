@@ -30,7 +30,7 @@ export class DatapackManager {
     return world.uninstall(pack);
   }
 
-  async search() {
+  async list() {
     const packs: Datapack[] = [];
     const worldsPath = pth.join(this.root, "saves");
     let worldsDir: Dir;
