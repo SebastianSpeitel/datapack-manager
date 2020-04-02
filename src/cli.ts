@@ -10,7 +10,7 @@ const manager = new DatapackManager();
 function getMinecraftPath(): string {
   switch (os.platform()) {
     case "win32":
-      return pth.join(os.homedir(), "%AppData%/Roaming/.minecraft");
+      return pth.join(os.homedir(), "AppData/Roaming/.minecraft");
     case "darwin":
       return pth.join(os.homedir(), "Library/Application Support/minecraft");
     case "linux":
