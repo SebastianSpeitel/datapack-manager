@@ -1,8 +1,9 @@
 import { DatapackManager } from "./index";
-import { InstallMode } from "./world";
+import World, { InstallMode } from "./world";
 import yargs from "yargs";
 import os from "os";
 import pth from "path";
+import { Datapack } from "@throw-out-error/minecraft-datapack";
 
 const manager = new DatapackManager();
 
@@ -78,7 +79,17 @@ yargs
 
     manager.root = root;
     const packs = await manager.list();
-    console.log(packs);
+    console.log("Local datapacks:");
+    const locations = new Map<World["path"], Datapack[]>();
+    packs.forEach(pack => {
+      locations.set(pack.path, [...(locations.get(pack.path) || []), pack]);
+    });
+    for (let [path, packs] of locations.entries()) {
+      console.log(` * ${path}`);
+      for (let { name } of packs) {
+        console.log(`   * ${name}`);
+      }
+    }
   })
   .help()
   .demandCommand()

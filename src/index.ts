@@ -38,7 +38,7 @@ export class DatapackManager {
       worldsDir = await fs.opendir(worldsPath);
     } catch (e) {
       console.error(e?.message ?? e);
-      return;
+      return packs;
     }
 
     for await (let { name } of worldsDir) {
