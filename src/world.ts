@@ -57,23 +57,17 @@ export default class World {
     }
   }
 
-  async uninstall(pack: Datapack | string) {
-    let packPath: unknown = pack;
-    if (pack instanceof Datapack) {
-      packPath = pth.join(pack.path, pack.name);
-    }
+  async uninstall(name: string): Promise<void>;
+  /**@param {string} path absolute path of the datapack */
+  async uninstall(path: string): Promise<void>;
+  async uninstall(nameOrPath: string): Promise<void> {
+    const path = pth.resolve(this.path, "datapacks", nameOrPath);
 
-    if (typeof packPath !== "string") {
-      throw TypeError("Invalid datapack");
-    }
-
-    const { isSymbolicLink, isDirectory } = await fs.stat(packPath);
+    const { isSymbolicLink, isDirectory } = await fs.stat(path);
     if (isSymbolicLink()) {
-      await fs.unlink(packPath);
-    }
-
-    if (isDirectory()) {
-      await fs.rmdir(packPath, { recursive: true });
+      await fs.unlink(path);
+    } else if (isDirectory()) {
+      await fs.rmdir(path, { recursive: true });
     }
   }
 }

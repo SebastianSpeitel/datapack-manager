@@ -26,7 +26,7 @@ function makeConfig() {
 }
 
 const cjsConfig = makeConfig();
-cjsConfig.input = [cjsConfig.input, "src/cli.ts"].flat();
+cjsConfig.input = [cjsConfig.input, "src/cli/index.ts"].flat();
 const esmConfig = makeConfig();
 esmConfig.output.format = "esm";
 esmConfig.output.dir = "dist";

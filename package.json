@@ -7,7 +7,7 @@
     "prepare": "rollup -c"
   },
   "bin": {
-    "datapack-manager": "legacy/cli.js"
+    "datapack-manager": "legacy/cli/index.js"
   },
   "repository": {
     "type": "git",

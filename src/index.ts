@@ -1,7 +1,6 @@
-import { promises as fs, Dir } from "fs";
-import pth from "path";
 import World from "./world";
 import { Datapack } from "@throw-out-error/minecraft-datapack";
+import { searchDatapacks } from "./util";
 
 export class DatapackManager {
   declare root: string;
@@ -22,31 +21,18 @@ export class DatapackManager {
     return world.install(pack, opts);
   }
 
-  async uninstall(pack: Datapack | string, world: World | string) {
+  async uninstall(name: string, world: World | string): Promise<void>;
+  /**@param {string} path absolute path of the datapack */
+  async uninstall(path: string, world: World | string): Promise<void>;
+  async uninstall(nameOrPath: string, world: World | string): Promise<void> {
     if (typeof world === "string") {
       world = new World(world);
     }
 
-    return world.uninstall(pack);
+    return world.uninstall(nameOrPath);
   }
 
-  async list() {
-    const packs: Datapack[] = [];
-    const worldsPath = pth.join(this.root, "saves");
-    let worldsDir: Dir;
-    try {
-      worldsDir = await fs.opendir(worldsPath);
-    } catch (e) {
-      console.error(e?.message ?? e);
-      return packs;
-    }
-
-    for await (let { name } of worldsDir) {
-      const world = World.fromPath(pth.join(worldsPath, name));
-      const worldPacks = await world.getDatapacks();
-      packs.push(...worldPacks);
-    }
-
-    return packs;
+  async list(): ReturnType<typeof searchDatapacks> {
+    return searchDatapacks();
   }
 }
