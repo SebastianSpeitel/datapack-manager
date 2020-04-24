@@ -1,26 +1,34 @@
 import { Datapack } from "@throw-out-error/minecraft-datapack";
-import { InferredOptionTypes } from "yargs";
-import { Context } from ".";
+import { Argv, Arguments } from "yargs";
+import config from "../config";
 
-export const options = {
-  name: {
-    desc: "Name of the datapack",
-    alias: "n",
-    type: "string" as "string",
-    required: true as true
-  },
-  description: {
-    desc: "Description for the datapack",
-    alias: ["d", "desc"],
-    type: "string" as "string"
-  }
-};
+type Options = Arguments<{
+  name: string;
+  description?: string;
+}>;
 
-export async function action(
-  { config: { cache } }: Context,
-  { name, description }: InferredOptionTypes<typeof options>
-) {
+export const command = ["create", "c"];
+
+export const desc = "Create a new datapack";
+
+export function builder(yargs: Argv) {
+  return yargs.options({
+    name: {
+      desc: "Name of the datapack",
+      alias: "n",
+      type: "string" as "string",
+      required: true as true
+    },
+    description: {
+      desc: "Description for the datapack",
+      alias: ["d", "desc"],
+      type: "string" as "string"
+    }
+  }) as Argv<Options>;
+}
+
+export async function handler({ name, description }: Options) {
   const pack = new Datapack(name, ".", { description });
-  pack.path = cache;
+  pack.path = config.cache;
   pack.compile();
 }

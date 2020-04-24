@@ -71,10 +71,7 @@ yargs
     const argv = yargs.options(list.options).argv;
     list.action(context, argv);
   })
-  .command(["create"], "List local datapacks", yargs => {
-    const argv = yargs.options(create.options).argv;
-    create.action(context, argv);
-  })
+  .command(create)
   .command(configCmd)
   .help()
   .demandCommand()
