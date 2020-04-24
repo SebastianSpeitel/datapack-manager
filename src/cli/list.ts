@@ -1,6 +1,6 @@
-import { Context } from ".";
 import { SearchResult, getMinecraftPath } from "../util";
-import { InferredOptionTypes } from "yargs";
+import { Arguments, Argv } from "yargs";
+import { DatapackManager } from "..";
 
 function printDatapack(
   result: SearchResult,
@@ -15,24 +15,33 @@ function printDatapack(
   }
 }
 
-export const options = {
-  root: {
-    desc: "Path of the minecraft folder",
-    alias: "r",
-    normalize: true,
-    default: getMinecraftPath()
-  },
-  desc: {
-    desc: "Print descriptions",
-    alias: "d",
-    default: true
-  }
-};
+type Options = Arguments<{
+  root: string;
+  desc: boolean;
+}>;
 
-export async function action(
-  { manager }: Context,
-  { root, desc }: InferredOptionTypes<typeof options>
-) {
+export const command = ["list", "l"];
+
+export const desc = "List local datapacks";
+
+export function builder(yargs: Argv) {
+  return yargs.options({
+    root: {
+      desc: "Path of the minecraft folder",
+      alias: "r",
+      normalize: true,
+      default: getMinecraftPath()
+    },
+    desc: {
+      desc: "Print descriptions",
+      alias: "d",
+      default: true
+    }
+  }) as Argv<Options>;
+}
+
+export async function handler({ root, desc }: Options) {
+  const manager = new DatapackManager();
   manager.root = root;
   const results = await manager.list();
 
