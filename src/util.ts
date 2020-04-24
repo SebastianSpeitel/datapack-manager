@@ -15,12 +15,6 @@ export function getMinecraftPath(): string {
   }
 }
 
-export function loadConfig() {
-  return {
-    cache: pth.join(getMinecraftPath(), "datapacks")
-  };
-}
-
 async function datapackFromPath(path: string): Promise<Datapack> {
   const stats = await fs.stat(path);
   if (!stats.isDirectory()) {
