@@ -10,6 +10,8 @@ type Options = Arguments<{
 
 export const command = "config <key> [<value>]";
 
+export const desc = "Configure datapack-manager";
+
 export function builder(yargs: Argv) {
   return yargs as Argv<Options>;
 }
