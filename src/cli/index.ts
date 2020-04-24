@@ -1,9 +1,11 @@
 import { DatapackManager } from "..";
 import { InstallMode } from "../world";
 import yargs from "yargs";
-import { getMinecraftPath, loadConfig } from "../util";
+import { getMinecraftPath } from "../util";
+import config from "../config";
 import * as list from "./list";
 import * as create from "./create";
+import * as configCmd from "./config";
 
 const manager = new DatapackManager();
 
@@ -15,7 +17,7 @@ export interface Context {
 }
 const context: Context = {
   manager,
-  config: loadConfig()
+  config
 };
 
 yargs
@@ -73,6 +75,7 @@ yargs
     const argv = yargs.options(create.options).argv;
     create.action(context, argv);
   })
+  .command(configCmd)
   .help()
   .demandCommand()
   .recommendCommands().argv;

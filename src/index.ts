@@ -1,6 +1,7 @@
 import World from "./world";
 import { Datapack } from "@throw-out-error/minecraft-datapack";
 import { searchDatapacks } from "./util";
+import config from "./config";
 
 export class DatapackManager {
   declare root: string;
