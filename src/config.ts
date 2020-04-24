@@ -37,6 +37,12 @@ class Config {
   }
 
   async save() {
+    const dir = pth.dirname(Config.path);
+    try {
+      await fs.promises.access(dir);
+    } catch (e) {
+      await fs.promises.mkdir(dir, { recursive: true });
+    }
     return fs.promises.writeFile(Config.path, JSON.stringify(this, null, 2));
   }
 
