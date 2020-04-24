@@ -29,6 +29,5 @@ export function builder(yargs: Argv) {
 
 export async function handler({ name, description }: Options) {
   const pack = new Datapack(name, ".", { description });
-  pack.path = config.cache;
-  pack.compile();
+  pack.compile(config.cache);
 }

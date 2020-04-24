@@ -1,6 +1,6 @@
 {
   "name": "datapack-manager",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Manage your Minecraft datapacks",
   "main": "legacy/index.js",
   "scripts": {
@@ -24,14 +24,14 @@
   },
   "homepage": "https://github.com/SebastianSpeitel/datapack-manager#readme",
   "devDependencies": {
-    "@types/node": "^13.9.8",
+    "@types/node": "^13.13.2",
     "@types/yargs": "^15.0.4",
-    "rollup": "^2.3.2",
+    "rollup": "^2.7.2",
     "rollup-plugin-typescript2": "^0.27.0",
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@throw-out-error/minecraft-datapack": "^1.6.8",
+    "@throw-out-error/minecraft-datapack": "^1.6.13",
     "yargs": "^15.3.1"
   }
 }
