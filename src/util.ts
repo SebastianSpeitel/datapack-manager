@@ -23,7 +23,7 @@ export function loadConfig() {
 
 async function datapackFromPath(path: string): Promise<Datapack> {
   const { isDirectory } = await fs.stat(path);
-  if (!isDirectory) {
+  if (!isDirectory()) {
     throw Error("Invalid datapack. Not a directory.");
   }
   let json: Buffer;
