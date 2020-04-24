@@ -22,8 +22,8 @@ export function loadConfig() {
 }
 
 async function datapackFromPath(path: string): Promise<Datapack> {
-  const { isDirectory } = await fs.stat(path);
-  if (!isDirectory()) {
+  const stats = await fs.stat(path);
+  if (!stats.isDirectory()) {
     throw Error("Invalid datapack. Not a directory.");
   }
   let json: Buffer;
@@ -110,17 +110,24 @@ export async function searchDatapacks({
   }
 
   if (typeof name === "string") {
-    return Promise.all(
+    const results = await Promise.all(
       dirs.map(async r => {
         const path = pth.join(r.dir, name);
+        let datapack: Datapack;
+        try {
+          datapack = await datapackFromPath(path);
+        } catch (e) {
+          return false as false;
+        }
         return {
           ...r,
           name,
           path,
-          datapack: await datapackFromPath(path)
+          datapack
         };
       })
     );
+    return results.filter(Boolean) as SearchResult[];
   }
 
   const promises = await Promise.all(
@@ -130,7 +137,7 @@ export async function searchDatapacks({
       try {
         dir = await fs.opendir(r.dir);
       } catch (e) {}
-      if (!dir) return [];
+      if (!dir) return false as false;
 
       const results: Promise<SearchResult | false>[] = [];
       for await (let { name: pack } of dir) {
@@ -154,5 +161,6 @@ export async function searchDatapacks({
   );
 
   const results = await Promise.all(promises.flat());
+
   return results.filter(Boolean) as SearchResult[];
 }
