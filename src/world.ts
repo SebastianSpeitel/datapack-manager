@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 
 import { Datapack } from "@throw-out-error/minecraft-datapack";
 import pth from "path";
+import { getMinecraftPath } from "./util";
 
 export type InstallMode = "symlink" | "copy" | "compile" | "move";
 
@@ -9,6 +10,7 @@ const worldCache = new Map<string, World>();
 
 export default class World {
   static fromPath(path: string) {
+    path = pth.resolve(getMinecraftPath(), "saves", path);
     const world = worldCache.get(path);
     return world || new World(path);
   }
