@@ -1,6 +1,6 @@
-import { SearchResult, getMinecraftPath } from "../util";
+import { getMinecraftPath } from "../util";
 import { Arguments, Argv } from "yargs";
-import { DatapackManager } from "..";
+import { DatapackManager, SearchResult } from "..";
 
 function printDatapack(
   result: SearchResult,
@@ -43,7 +43,7 @@ export function builder(yargs: Argv) {
 export async function handler({ root, desc }: Options) {
   const manager = new DatapackManager();
   manager.root = root;
-  const results = await manager.list();
+  const results = await manager.search({ installed: true, cached: true });
 
   const locations = new Map<string, SearchResult[]>();
   results.forEach(result => {
