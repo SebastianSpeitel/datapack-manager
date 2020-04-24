@@ -65,10 +65,10 @@ export default class World {
   async uninstall(nameOrPath: string): Promise<void> {
     const path = pth.resolve(this.path, "datapacks", nameOrPath);
 
-    const { isSymbolicLink, isDirectory } = await fs.stat(path);
-    if (isSymbolicLink()) {
+    const stats = await fs.stat(path);
+    if (stats.isSymbolicLink()) {
       await fs.unlink(path);
-    } else if (isDirectory()) {
+    } else if (stats.isDirectory()) {
       await fs.rmdir(path, { recursive: true });
     }
   }
