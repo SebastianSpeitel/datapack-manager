@@ -5,17 +5,20 @@ import Table, { Cell, TableConstructorOptions } from "cli-table3";
 
 function formatResult(
   result: SearchResult,
-  { desc = true }: { desc?: boolean } = {}
+  { desc = true, path = true }: { desc?: boolean; path?: boolean } = {}
 ): Cell[] {
-  return [result.name, desc && result.datapack.description, result.path].filter(
-    Boolean
-  );
+  return [
+    result.name,
+    desc && result.datapack.description,
+    path && result.path
+  ].filter(Boolean);
 }
 
 type Options = Arguments<{
   root: string;
-  desc: boolean;
-  borders: boolean;
+  description: boolean;
+  border: boolean;
+  location: boolean;
 }>;
 
 export const command = ["list", "l"];
@@ -30,15 +33,21 @@ export function builder(yargs: Argv) {
       normalize: true,
       default: getMinecraftPath()
     },
-    desc: {
+    description: {
       desc: "Print descriptions",
       alias: "d",
-      default: true
+      default: true,
+      type: "boolean"
     },
-    borders: {
+    border: {
       type: "boolean",
       alias: "b",
       desc: "Prints borders around the table",
+      default: true
+    },
+    location: {
+      type: "boolean",
+      desc: "Print locations",
       default: true
     }
   }) as Argv<Options>;
@@ -69,30 +78,37 @@ const borderlessConfig: TableConstructorOptions = {
   }
 };
 
-export async function handler({ root, desc, borders }: Options) {
+export async function handler({
+  root,
+  description,
+  border,
+  location
+}: Options) {
   const manager = new DatapackManager();
   manager.root = root;
   const results = await manager.search({ installed: true, cached: true });
 
   const cached = results.filter(r => r.cached);
 
-  const head = desc
-    ? ["World", "Name", "Description", "Location"]
-    : ["World", "Name", "Location"];
+  let head = ["World", "Name"];
+  if (description) head.push("Description");
+  if (location) head.push("Locations");
 
   const tableConfig: TableConstructorOptions = {
     head,
     wordWrap: true
   };
 
-  if (!borders) {
+  if (!border) {
     Object.assign(tableConfig, borderlessConfig);
   }
 
   const table = new Table(tableConfig);
 
   if (cached.length) {
-    const rows: Cell[][] = cached.map(r => formatResult(r, { desc }));
+    const rows: Cell[][] = cached.map(r =>
+      formatResult(r, { desc: description, path: location })
+    );
     rows[0].unshift({ content: "global", rowSpan: cached.length });
     table.push(...rows);
   }
@@ -112,7 +128,9 @@ export async function handler({ root, desc, borders }: Options) {
     });
 
     for (let [world, results] of worlds) {
-      const rows: Cell[][] = results.map(r => formatResult(r, { desc }));
+      const rows: Cell[][] = results.map(r =>
+        formatResult(r, { desc: description, path: location })
+      );
       rows[0].unshift({ content: world, rowSpan: results.length });
       table.push(...rows);
     }
