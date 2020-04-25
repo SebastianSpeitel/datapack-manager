@@ -1,7 +1,7 @@
 import { getMinecraftPath } from "../util";
 import { Arguments, Argv } from "yargs";
 import { DatapackManager, SearchResult } from "..";
-import Table, { Cell } from "cli-table3";
+import Table, { Cell, TableConstructorOptions } from "cli-table3";
 
 function formatResult(
   result: SearchResult,
@@ -15,6 +15,7 @@ function formatResult(
 type Options = Arguments<{
   root: string;
   desc: boolean;
+  borders: boolean;
 }>;
 
 export const command = ["list", "l"];
@@ -33,11 +34,42 @@ export function builder(yargs: Argv) {
       desc: "Print descriptions",
       alias: "d",
       default: true
+    },
+    borders: {
+      type: "boolean",
+      alias: "b",
+      desc: "Prints borders around the table",
+      default: true
     }
   }) as Argv<Options>;
 }
 
-export async function handler({ root, desc }: Options) {
+const borderlessConfig: TableConstructorOptions = {
+  chars: {
+    top: "",
+    "top-mid": "",
+    "top-left": "",
+    "top-right": "",
+    bottom: "",
+    "bottom-mid": "",
+    "bottom-left": "",
+    "bottom-right": "",
+    left: "",
+    "left-mid": "",
+    mid: "",
+    "mid-mid": "",
+    right: "",
+    "right-mid": "",
+    middle: " "
+  },
+  style: {
+    "padding-left": 0,
+    "padding-right": 0,
+    compact: true
+  }
+};
+
+export async function handler({ root, desc, borders }: Options) {
   const manager = new DatapackManager();
   manager.root = root;
   const results = await manager.search({ installed: true, cached: true });
@@ -48,10 +80,16 @@ export async function handler({ root, desc }: Options) {
     ? ["World", "Name", "Description", "Location"]
     : ["World", "Name", "Location"];
 
-  const table = new Table({
+  const tableConfig: TableConstructorOptions = {
     head,
     wordWrap: true
-  });
+  };
+
+  if (!borders) {
+    Object.assign(tableConfig, borderlessConfig);
+  }
+
+  const table = new Table(tableConfig);
 
   if (cached.length) {
     const rows: Cell[][] = cached.map(r => formatResult(r, { desc }));
