@@ -1,4 +1,3 @@
-import { getMinecraftPath } from "../util";
 import { Arguments, Argv } from "yargs";
 import { DatapackManager, SearchResult } from "..";
 import Table, { Cell, TableConstructorOptions } from "cli-table3";
@@ -15,7 +14,6 @@ function formatResult(
 }
 
 type Options = Arguments<{
-  root: string;
   description: boolean;
   border: boolean;
   location: boolean;
@@ -27,12 +25,6 @@ export const desc = "List local datapacks";
 
 export function builder(yargs: Argv) {
   return yargs.options({
-    root: {
-      desc: "Path of the minecraft folder",
-      alias: "r",
-      normalize: true,
-      default: getMinecraftPath()
-    },
     description: {
       desc: "Print descriptions",
       alias: "d",
@@ -78,14 +70,8 @@ const borderlessConfig: TableConstructorOptions = {
   }
 };
 
-export async function handler({
-  root,
-  description,
-  border,
-  location
-}: Options) {
+export async function handler({ description, border, location }: Options) {
   const manager = new DatapackManager();
-  manager.root = root;
   const results = await manager.search({ installed: true, cached: true });
 
   const cached = results.filter(r => r.cached);

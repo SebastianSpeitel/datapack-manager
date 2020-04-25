@@ -23,12 +23,6 @@ type SearchOptions = {
 };
 
 export class DatapackManager {
-  declare root: string;
-
-  constructor() {
-    this.root = "";
-  }
-
   async install(
     name: string,
     world: World | string,
