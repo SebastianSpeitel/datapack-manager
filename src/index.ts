@@ -12,6 +12,7 @@ export interface SearchResult {
   datapack: Datapack;
   name: string;
   world?: string;
+  cached?: boolean;
 }
 type SearchOptions = {
   name?: string | RegExp;
@@ -95,6 +96,7 @@ export class DatapackManager {
 
     if (cached) {
       dirs.push({
+        cached,
         dir: pth.join(getMinecraftPath(), "datapacks")
       });
     }

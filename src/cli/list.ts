@@ -45,27 +45,38 @@ export async function handler({ root, desc }: Options) {
   manager.root = root;
   const results = await manager.search({ installed: true, cached: true });
 
-  const locations = new Map<string, SearchResult[]>();
-  results.forEach(result => {
-    locations.set(result.world || "", [
-      ...(locations.get(result.world || "") || []),
-      result
-    ]);
-  });
+  const cached = results.filter(r => r.cached);
 
-  const cached = locations.get("");
-  if (cached && cached.length) {
-    console.log("Available:");
+  if (cached.length) {
+    console.log("Cached:");
     for (let result of cached) {
       printDatapack(result, { desc });
     }
   }
-  console.log("Installed:");
-  for (let [world, results] of locations.entries()) {
-    if (world === "") continue;
-    console.log(` * ${world}`);
-    for (let result of results) {
-      printDatapack(result, { desc, indent: 2 });
+
+  const installed = results.filter(r => r.world) as Array<
+    SearchResult & {
+      world: string;
     }
+  >;
+
+  if (installed.length) {
+    const worlds = new Map<string, SearchResult[]>();
+    installed.forEach(result => {
+      const results = worlds.get(result.world) || [];
+      results.push(result);
+      worlds.set(result.world, results);
+    });
+    console.log("Installed:");
+    for (let [world, results] of worlds) {
+      console.log(` * ${world}`);
+      for (let result of results) {
+        printDatapack(result, { desc, indent: 2 });
+      }
+    }
+  }
+
+  if (!installed.length && !cached.length) {
+    console.log("No local datapacks found.");
   }
 }
