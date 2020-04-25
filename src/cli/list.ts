@@ -72,13 +72,13 @@ const borderlessConfig: TableConstructorOptions = {
 
 export async function handler({ description, border, location }: Options) {
   const manager = new DatapackManager();
-  const results = await manager.search({ installed: true, cached: true });
+  const results = await manager.search({ installed: true, global: true });
 
-  const cached = results.filter(r => r.cached);
+  const global = results.filter(r => r.global);
 
   let head = ["World", "Name"];
   if (description) head.push("Description");
-  if (location) head.push("Locations");
+  if (location) head.push("Location");
 
   const tableConfig: TableConstructorOptions = {
     head,
@@ -91,11 +91,11 @@ export async function handler({ description, border, location }: Options) {
 
   const table = new Table(tableConfig);
 
-  if (cached.length) {
-    const rows: Cell[][] = cached.map(r =>
+  if (global.length) {
+    const rows: Cell[][] = global.map(r =>
       formatResult(r, { desc: description, path: location })
     );
-    rows[0].unshift({ content: "global", rowSpan: cached.length });
+    rows[0].unshift({ content: "global", rowSpan: global.length });
     table.push(...rows);
   }
 

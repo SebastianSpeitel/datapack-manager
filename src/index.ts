@@ -12,13 +12,13 @@ export interface SearchResult {
   datapack: Datapack;
   name: string;
   world?: string;
-  cached?: boolean;
+  global?: boolean;
 }
 type SearchOptions = {
   name?: string | RegExp;
   world?: string;
   here?: boolean;
-  cached?: boolean;
+  global?: boolean;
   installed?: boolean;
 };
 
@@ -50,7 +50,7 @@ export class DatapackManager {
 
     let pack: string | Datapack = nameOrPathOrPack;
     if (typeof nameOrPathOrPack === "string") {
-      pack = pth.resolve(config.cache, nameOrPathOrPack);
+      pack = pth.resolve(config.global, nameOrPathOrPack);
     }
 
     return world.install(pack, opts);
@@ -71,7 +71,7 @@ export class DatapackManager {
     name,
     world,
     here = !world,
-    cached = !world,
+    global = !world,
     installed = !world
   }: SearchOptions = {}): Promise<SearchResult[]> {
     type IntermediateResult = Omit<
@@ -88,9 +88,9 @@ export class DatapackManager {
       });
     }
 
-    if (cached) {
+    if (global) {
       dirs.push({
-        cached,
+        global: global,
         dir: pth.join(getMinecraftPath(), "datapacks")
       });
     }

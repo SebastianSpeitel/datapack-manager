@@ -6,7 +6,7 @@ import { getMinecraftPath } from "./util";
 class Config {
   static path = pth.join(os.homedir(), ".config", "datapack-manager", "config");
 
-  cache: string;
+  global: string;
 
   constructor() {
     this.reload();
@@ -33,7 +33,7 @@ class Config {
   }
 
   init() {
-    this.cache = pth.join(getMinecraftPath(), "datapacks");
+    this.global = pth.join(getMinecraftPath(), "datapacks");
   }
 
   async save() {
@@ -48,7 +48,7 @@ class Config {
 
   toJSON() {
     return {
-      cache: this.cache
+      global: this.global
     };
   }
 }

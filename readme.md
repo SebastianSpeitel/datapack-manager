@@ -14,7 +14,7 @@ npm install datapack-manager -g
 
 ### List
 
-Lists local datapacks found in the cache directory and worldsaves.
+Lists local datapacks found in the global directory and worldsaves.
 
 ```
 datapack-manager list
