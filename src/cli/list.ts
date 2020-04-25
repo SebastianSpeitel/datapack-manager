@@ -1,18 +1,15 @@
 import { getMinecraftPath } from "../util";
 import { Arguments, Argv } from "yargs";
 import { DatapackManager, SearchResult } from "..";
+import Table, { Cell } from "cli-table3";
 
-function printDatapack(
+function formatResult(
   result: SearchResult,
-  { indent = 0, desc }: { indent?: number | string; desc: boolean }
-) {
-  if (typeof indent === "number") {
-    indent = " ".repeat(indent);
-  }
-  console.log(`${indent} * ${result.name} (${result.path})`);
-  if (desc) {
-    console.log(`${indent}   ${result.datapack.description}`);
-  }
+  { desc = true }: { desc?: boolean } = {}
+): Cell[] {
+  return [result.name, desc && result.datapack.description, result.path].filter(
+    Boolean
+  );
 }
 
 type Options = Arguments<{
@@ -47,11 +44,19 @@ export async function handler({ root, desc }: Options) {
 
   const cached = results.filter(r => r.cached);
 
+  const head = desc
+    ? ["World", "Name", "Description", "Location"]
+    : ["World", "Name", "Location"];
+
+  const table = new Table({
+    head,
+    wordWrap: true
+  });
+
   if (cached.length) {
-    console.log("Cached:");
-    for (let result of cached) {
-      printDatapack(result, { desc });
-    }
+    const rows: Cell[][] = cached.map(r => formatResult(r, { desc }));
+    rows[0].unshift({ content: "global", rowSpan: cached.length });
+    table.push(...rows);
   }
 
   const installed = results.filter(r => r.world) as Array<
@@ -67,16 +72,13 @@ export async function handler({ root, desc }: Options) {
       results.push(result);
       worlds.set(result.world, results);
     });
-    console.log("Installed:");
+
     for (let [world, results] of worlds) {
-      console.log(` * ${world}`);
-      for (let result of results) {
-        printDatapack(result, { desc, indent: 2 });
-      }
+      const rows: Cell[][] = results.map(r => formatResult(r, { desc }));
+      rows[0].unshift({ content: world, rowSpan: results.length });
+      table.push(...rows);
     }
   }
 
-  if (!installed.length && !cached.length) {
-    console.log("No local datapacks found.");
-  }
+  console.log(table.toString());
 }

@@ -20,7 +20,8 @@ function makeConfig() {
       "yargs",
       "path",
       "@throw-out-error/minecraft-datapack",
-      "os"
+      "os",
+      "cli-table3"
     ]
   };
 }
