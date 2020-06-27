@@ -4,12 +4,17 @@ import Table, { Cell, TableConstructorOptions } from "cli-table3";
 
 function formatResult(
   result: SearchResult,
-  { desc = true, path = true }: { desc?: boolean; path?: boolean } = {}
+  opts: { desc?: boolean; path?: boolean; dereference?: boolean } = {}
 ): Cell[] {
+  let path = result.path;
+  if (result.symlink && opts.dereference) {
+    path = result.symlink;
+  }
+
   return [
     result.name,
-    desc && result.datapack.description,
-    path && result.path
+    opts.desc && result.datapack.description,
+    opts.path && path
   ].filter(Boolean);
 }
 
@@ -17,6 +22,7 @@ type Options = Arguments<{
   description: boolean;
   border: boolean;
   location: boolean;
+  dereference: boolean;
 }>;
 
 export const command = ["list", "l"];
@@ -41,6 +47,12 @@ export function builder(yargs: Argv) {
       type: "boolean",
       desc: "Print locations",
       default: true
+    },
+    dereference: {
+      type: "boolean",
+      alias: "L",
+      desc: "Dereference symlinks",
+      default: false
     }
   }) as Argv<Options>;
 }
@@ -70,9 +82,16 @@ const borderlessConfig: TableConstructorOptions = {
   }
 };
 
-export async function handler({ description, border, location }: Options) {
+export async function handler({
+  description,
+  border,
+  location,
+  dereference
+}: Options) {
   const manager = new DatapackManager();
   const results = await manager.search({ installed: true, global: true });
+
+  console.log(results);
 
   const global = results.filter(r => r.global);
   const installed = results.filter(r => r.world) as Array<
@@ -98,7 +117,7 @@ export async function handler({ description, border, location }: Options) {
 
   if (global.length) {
     const rows: Cell[][] = global.map(r =>
-      formatResult(r, { desc: description, path: location })
+      formatResult(r, { desc: description, path: location, dereference })
     );
     rows[0].unshift({ content: "global", rowSpan: global.length });
     table.push(...rows);
@@ -114,7 +133,7 @@ export async function handler({ description, border, location }: Options) {
 
     for (let [world, results] of worlds) {
       const rows: Cell[][] = results.map(r =>
-        formatResult(r, { desc: description, path: location })
+        formatResult(r, { desc: description, path: location, dereference })
       );
       rows[0].unshift({ content: world, rowSpan: results.length });
       table.push(...rows);
