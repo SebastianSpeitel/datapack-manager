@@ -24,14 +24,14 @@
   },
   "homepage": "https://github.com/SebastianSpeitel/datapack-manager#readme",
   "devDependencies": {
-    "@types/node": "^13.13.2",
-    "@types/yargs": "^15.0.4",
-    "rollup": "^2.7.2",
-    "rollup-plugin-typescript2": "^0.27.0",
-    "typescript": "^3.8.3"
+    "@types/node": "^13.13.12",
+    "@types/yargs": "^15.0.5",
+    "rollup": "^2.18.1",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "typescript": "^3.9.5"
   },
   "dependencies": {
-    "@throw-out-error/minecraft-datapack": "^1.6.13",
+    "@throw-out-error/minecraft-datapack": "^1.6.18",
     "cli-table3": "^0.6.0",
     "yargs": "^15.3.1"
   }
