@@ -12,6 +12,7 @@ export interface SearchResult {
   datapack: Datapack;
   name: string;
   world?: string;
+  symlink?: false | string;
   global?: boolean;
 }
 type SearchOptions = {
@@ -125,8 +126,14 @@ export class DatapackManager {
         dirs.map(async r => {
           const path = pth.join(r.dir, name);
           let datapack: Datapack;
+          let symlink: boolean | string;
           try {
             datapack = await datapackFromPath(path);
+            const stats = await fs.lstat(path);
+            symlink = stats.isSymbolicLink();
+            if (symlink) {
+              symlink = await fs.readlink(path);
+            }
           } catch (e) {
             return false as false;
           }
@@ -134,7 +141,8 @@ export class DatapackManager {
             ...r,
             name,
             path,
-            datapack
+            datapack,
+            symlink
           };
         })
       );
@@ -156,12 +164,19 @@ export class DatapackManager {
           const path = pth.join(r.dir, pack);
           results.push(
             datapackFromPath(path)
-              .then(datapack => {
+              .then(async datapack => {
+                const stats = await fs.lstat(path);
+                let symlink: boolean | string = stats.isSymbolicLink();
+                if (symlink) {
+                  symlink = await fs.readlink(path);
+                }
+
                 return {
                   ...r,
                   name: pack,
                   path,
-                  datapack
+                  datapack,
+                  symlink
                 };
               })
               .catch(() => false as false)
