@@ -25,7 +25,7 @@ type Options = Arguments<{
   dereference: boolean;
 }>;
 
-export const command = ["list", "l"];
+export const command = ["list", "l", "ls"];
 
 export const desc = "List local datapacks";
 
