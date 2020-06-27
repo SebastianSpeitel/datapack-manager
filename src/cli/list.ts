@@ -75,6 +75,11 @@ export async function handler({ description, border, location }: Options) {
   const results = await manager.search({ installed: true, global: true });
 
   const global = results.filter(r => r.global);
+  const installed = results.filter(r => r.world) as Array<
+    SearchResult & {
+      world: string;
+    }
+  >;
 
   let head = ["World", "Name"];
   if (description) head.push("Description");
@@ -98,12 +103,6 @@ export async function handler({ description, border, location }: Options) {
     rows[0].unshift({ content: "global", rowSpan: global.length });
     table.push(...rows);
   }
-
-  const installed = results.filter(r => r.world) as Array<
-    SearchResult & {
-      world: string;
-    }
-  >;
 
   if (installed.length) {
     const worlds = new Map<string, SearchResult[]>();
