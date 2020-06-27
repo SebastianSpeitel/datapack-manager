@@ -91,8 +91,6 @@ export async function handler({
   const manager = new DatapackManager();
   const results = await manager.search({ installed: true, global: true });
 
-  console.log(results);
-
   const global = results.filter(r => r.global);
   const installed = results.filter(r => r.world) as Array<
     SearchResult & {
