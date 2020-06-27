@@ -22,11 +22,12 @@ datapack-manager list
 List local datapacks
 
 Options:
-  --version   Show version number                                      [boolean]
-  --help      Show help                                                [boolean]
-  --root, -r  Path of the minecraft folder
-                                                         [string] [default: ...]
-  --desc, -d  Print descriptions                                 [default: true]
+  --version          Show version number                               [boolean]
+  --help             Show help                                         [boolean]
+  --description, -d  Print descriptions                [boolean] [default: true]
+  --border, -b       Prints borders around the table   [boolean] [default: true]
+  --location         Print locations                   [boolean] [default: true]
+  --dereference, -L  Dereference symlinks             [boolean] [default: false]
 ```
 
 ### Install
@@ -43,8 +44,6 @@ Options:
   --help      Show help                                                [boolean]
   --mode, -m  Install mode
             [choices: "symlink", "copy", "compile", "move"] [default: "symlink"]
-  --root, -r  Path of the minecraft folder
-                                                         [string] [default: ...]
 ```
 
 ### Uninstall
@@ -57,10 +56,8 @@ datapack-manager uninstall <pack> <world>
 Uninstall a datapack
 
 Options:
-  --version   Show version number                                      [boolean]
-  --help      Show help                                                [boolean]
-  --root, -r  Path of the minecraft folder
-                                                         [string] [default: ...]
+  --version  Show version number                                       [boolean]
+  --help     Show help                                                 [boolean]
 ```
 
 ### Create
